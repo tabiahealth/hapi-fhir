@@ -4,10 +4,11 @@ import ca.uhn.fhir.cr.BaseCrR4TestServer;
 import ca.uhn.fhir.rest.api.server.SystemRequestDetails;
 import ca.uhn.fhir.cr.r4.measure.MeasureOperationsProvider;
 import io.specto.hoverfly.junit.core.Hoverfly;
-import io.specto.hoverfly.junit5.HoverflyExtension;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Library;
+import org.hl7.fhir.r4.model.Measure;
 import org.hl7.fhir.r4.model.MeasureReport;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Parameters;
@@ -26,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
-@ExtendWith(HoverflyExtension.class)
 class CrR4MeasureOperationProviderIT extends BaseCrR4TestServer
 {
 
@@ -54,20 +54,11 @@ class CrR4MeasureOperationProviderIT extends BaseCrR4TestServer
 	@Test
 	public void test_Immunization_Ontario_Schedule() {
 		//given
-		var bundleFhirCommon = (Bundle) readResource(MY_FHIR_COMMON);
-		ourClient.transaction().withBundle(bundleFhirCommon).execute();
-
-		var bundleFhirHelpers = (Bundle) readResource(MY_FHIR_HELPERS);
-		ourClient.transaction().withBundle(bundleFhirHelpers).execute();
-
-		var bundleTestData = (Bundle) readResource(MY_TEST_DATA);
-		ourClient.transaction().withBundle(bundleTestData).execute();
-
-		var bundleValueSets = (Bundle) readResource(MY_VALUE_SETS);
-		ourClient.transaction().withBundle(bundleValueSets).execute();
-
-		var bundleCqlRsc = (Bundle) readResource(MY_IMMUNIZATION_CQL_RESOURCES);
-		ourClient.transaction().withBundle(bundleCqlRsc).execute();
+		loadBundle(MY_FHIR_COMMON);
+		loadBundle(MY_FHIR_HELPERS);
+		loadBundle(MY_TEST_DATA);
+		loadBundle(MY_VALUE_SETS);
+		loadBundle(MY_IMMUNIZATION_CQL_RESOURCES);
 
 		//non-cached run, 1 patient
 		var parametersEval1 = new Parameters();
@@ -105,58 +96,59 @@ class CrR4MeasureOperationProviderIT extends BaseCrR4TestServer
 	void testMeasureEvaluate() throws IOException {
 		loadBundle("Exm104FhirR4MeasureBundle.json");
 
-		var returnMeasureReport = this.myMeasureOperationsProvider.evaluateMeasure(
-			new IdType("Measure", "measure-EXM104-8.2.000"),
-			"2019-01-01",
-			"2020-01-01",
-			"subject",
-			"Patient/numer-EXM104",
-			null,
-			"2019-12-12",
-			null,
-			null,
-			null,
-			new SystemRequestDetails()
-		);
+		var parametersEval1 = new Parameters();
+		parametersEval1.addParameter("periodStart", new DateType("2019-01-01"));
+		parametersEval1.addParameter("periodEnd", new DateType("2019-12-31"));
+		parametersEval1.addParameter("subject", "Patient/numer-EXM104");
+		parametersEval1.addParameter("reportType", "subject");
+		parametersEval1.addParameter("lastreceivedon", "2019-12-12");
 
-		assertNotNull(returnMeasureReport);
+		var reportBasic = ourClient.operation().onInstance("Measure/measure-EXM104-8.2.000")
+			.named("$evaluate-measure")
+			.withParameters(parametersEval1)
+			.returnResourceType(MeasureReport.class)
+			.execute();
+
+		assertNotNull(reportBasic);
 	}
 
 	@Test
 	void testMeasureEvaluateWithTerminologyEndpoint(Hoverfly hoverfly) throws IOException {
 		loadBundle("Exm104FhirR4MeasureBundle.json");
 
-		var returnMeasureReport = this.myMeasureOperationsProvider.evaluateMeasure(
-			new IdType("Measure", "measure-EXM104-8.2.000"),
-			"2019-01-01",
-			"2020-01-01",
-			"subject",
-			"Patient/numer-EXM104",
-			null,
-			"2019-12-12",
-			null,
-			null,
-			null,
-			new SystemRequestDetails()
-		);
+		var parametersEval1 = new Parameters();
+		parametersEval1.addParameter("periodStart", new DateType("2019-01-01"));
+		parametersEval1.addParameter("periodEnd", new DateType("2020-01-01"));
+		parametersEval1.addParameter("subject", "Patient/numer-EXM104");
+		parametersEval1.addParameter("lastreceivedon", "2019-12-12");
+		parametersEval1.addParameter("reportType", "subject");
 
-		assertNotNull(returnMeasureReport);
+		var reportBasic = ourClient.operation().onInstance("Measure/measure-EXM104-8.2.000")
+			.named("$evaluate-measure")
+			.withParameters(parametersEval1)
+			.returnResourceType(MeasureReport.class)
+			.execute();
+
+
+		assertNotNull(reportBasic);
 	}
 
 	private void runWithPatient(String measureId, String patientId, int initialPopulationCount, int denominatorCount,
 										 int denominatorExclusionCount, int numeratorCount, boolean enrolledDuringParticipationPeriod,
 										 String participationPeriod) {
-		var returnMeasureReport = this.myMeasureOperationsProvider.evaluateMeasure(
-			new IdType("Measure", measureId),
-			"2022-01-01",
-			"2022-12-31",
-			"subject",
-			patientId,
-			null,
-			"2019-12-12",
-			null, null, null,
-			new SystemRequestDetails()
-		);
+
+		var parametersEval1 = new Parameters();
+		parametersEval1.addParameter("periodStart", new DateType("2022-01-01"));
+		parametersEval1.addParameter("periodEnd", new DateType("2022-12-31"));
+		parametersEval1.addParameter("subject", "Patient/" + patientId);
+		//parametersEval1.addParameter("lastreceivedon", "2019-12-12");
+		parametersEval1.addParameter("reportType", "subject");
+
+		var returnMeasureReport = ourClient.operation().onInstance("Measure/" + measureId)
+			.named("$evaluate-measure")
+			.withParameters(parametersEval1)
+			.returnResourceType(MeasureReport.class)
+			.execute();
 
 		assertNotNull(returnMeasureReport);
 
@@ -201,6 +193,8 @@ class CrR4MeasureOperationProviderIT extends BaseCrR4TestServer
 	@Test
 	void testBCSEHEDISMY2022() {
 		this.loadBundle("BCSEHEDISMY2022-bundle.json");
+		ourClient.read().resource(Library.class).withId("NCQAFHIRBase").execute();
+
 		runWithPatient("BCSEHEDISMY2022", "Patient/Patient-5", 0, 0, 0, 0, false,
 			"Interval[2020-10-01T00:00:00.000, 2022-12-31T23:59:59.999]");
 		runWithPatient("BCSEHEDISMY2022", "Patient/Patient-7", 1, 1, 0, 0, true,

@@ -21,8 +21,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.CapabilityStatement;
-import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.Resource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -99,11 +97,6 @@ public abstract class BaseCrR4TestServer extends BaseJpaR4Test implements IResou
 		myStorageSettings.setIndexMissingFields(JpaStorageSettings.IndexEnabledEnum.DISABLED);
 
 	}
-	public static CapabilityStatement getCapabilityStatement() {
-		CapabilityStatement metadata = new CapabilityStatement();
-		metadata.setFhirVersion(Enumerations.FHIRVersion._4_0_1);
-		return metadata;
-	}
 
 	@Override
 	public DaoRegistry getDaoRegistry() {
@@ -115,8 +108,9 @@ public abstract class BaseCrR4TestServer extends BaseJpaR4Test implements IResou
 		return ourCtx;
 	}
 
-	public Bundle loadBundle(String theLocation) {
-		return loadBundle(Bundle.class, theLocation);
+	public void loadBundle(String theLocation) {
+		var bundy = (Bundle) readResource(theLocation);
+		ourClient.transaction().withBundle(bundy).execute();
 	}
 
 

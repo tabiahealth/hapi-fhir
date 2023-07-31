@@ -126,10 +126,10 @@ public class TestCrR4Config {
 			options.add(CqlEngine.Options.EnableValidation);
 		}
 		cqlEngineOptions.setOptions(options);
-		cqlEngineOptions.setPageSize(1000);
-		cqlEngineOptions.setMaxCodesPerQuery(10000);
-		cqlEngineOptions.setShouldExpandValueSets(true);
-		cqlEngineOptions.setQueryBatchThreshold(100000);
+		//cqlEngineOptions.setPageSize(1000);
+		//cqlEngineOptions.setMaxCodesPerQuery(10000);
+		//cqlEngineOptions.setShouldExpandValueSets(true);
+		//cqlEngineOptions.setQueryBatchThreshold(100000);
 
 		var cqlOptions = evaluationSettings.getCqlOptions();
 		cqlOptions.setCqlEngineOptions(cqlEngineOptions);
@@ -158,6 +158,7 @@ public class TestCrR4Config {
 		cqlTranslatorOptions.setCompatibilityLevel(theCqlProperties.getCqlCompilerCompatibilityLevel());
 		cqlTranslatorOptions.setAnalyzeDataRequirements(theCqlProperties.isCqlCompilerAnalyzeDataRequirements());
 		cqlTranslatorOptions.setCollapseDataRequirements(theCqlProperties.isCqlCompilerCollapseDataRequirements());
+		//cqlTranslatorOptions.setEnableCqlOnly(true);
 		//cqlTranslatorOptions.set
 		cqlOptions.setCqlTranslatorOptions(cqlTranslatorOptions);
 
