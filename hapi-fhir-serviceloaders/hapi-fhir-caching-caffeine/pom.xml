@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>hapi-fhir-serviceloaders</artifactId>
 		<groupId>ca.uhn.hapi.fhir</groupId>
-		<version>6.9.0-SNAPSHOT</version>
+		<version>6.8.0-SNAPSHOT</version>
 
 		<relativePath>../pom.xml</relativePath>
 	</parent>
@@ -21,7 +21,11 @@
 		<dependency>
 			<groupId>ca.uhn.hapi.fhir</groupId>
 			<artifactId>hapi-fhir-caching-api</artifactId>
+<<<<<<< HEAD
 			<version>6.9.0-SNAPSHOT</version>
+=======
+			<version>6.8.0-SNAPSHOT</version>
+>>>>>>> rel_6_8
 
 		</dependency>
 		<dependency>
