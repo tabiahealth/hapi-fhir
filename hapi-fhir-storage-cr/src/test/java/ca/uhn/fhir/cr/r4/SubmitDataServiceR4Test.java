@@ -3,9 +3,12 @@ package ca.uhn.fhir.cr.r4;
 import ca.uhn.fhir.cr.BaseCrR4TestServer;
 
 import ca.uhn.fhir.cr.common.IRepositoryFactory;
+import ca.uhn.fhir.cr.repo.HapiFhirRepository;
 import ca.uhn.fhir.rest.api.server.SystemRequestDetails;
+import ca.uhn.fhir.rest.server.RestfulServer;
 import com.google.common.collect.Lists;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.MeasureReport;
 import org.hl7.fhir.r4.model.Observation;
@@ -26,6 +29,9 @@ public class SubmitDataServiceR4Test extends BaseCrR4TestServer {
 	@Autowired
 	ISubmitDataProcessorFactory myR4SubmitDataProcessorFactory;
 
+	@Autowired
+	RestfulServer ourRestfulServer;
+
 	@Test
 	public void submitDataTest(){
 		SystemRequestDetails requestDetails = new SystemRequestDetails();
@@ -41,8 +47,11 @@ public class SubmitDataServiceR4Test extends BaseCrR4TestServer {
 			.submitData(new IdType("Measure", "A123"), mr,
 				Lists.newArrayList(obs));
 
+		var repository = new HapiFhirRepository(myDaoRegistry, requestDetails, ourRestfulServer);
+		var result = repository.search(Bundle.class, MeasureReport.class, null);
 		var id1 = "MeasureReport/1";
 		var id2 = "Observation/2";
+
 
 		//find submitted resources
 		var savedObs = ourClient.read().resource(Observation.class).withId("2").execute();
