@@ -45,8 +45,8 @@ public abstract class BaseCrR4TestServer extends BaseJpaR4Test implements IResou
 	public static IParser ourParser;
 
 
-	@Autowired
-	ApplicationContext myApplicationContext;
+	//@Autowired
+	//ApplicationContext myApplicationContext;
 	private SimpleRequestHeaderInterceptor mySimpleHeaderInterceptor;
 
 

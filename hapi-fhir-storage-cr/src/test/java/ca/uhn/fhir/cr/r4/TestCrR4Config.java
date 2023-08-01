@@ -4,17 +4,10 @@ import ca.uhn.fhir.cr.TestCqlProperties;
 import ca.uhn.fhir.cr.TestCrConfig;
 import ca.uhn.fhir.cr.common.CqlThreadFactory;
 import ca.uhn.fhir.cr.config.r4.R4MeasureConfig;
-import ca.uhn.fhir.cr.r4.IActivityDefinitionProcessorFactory;
-import ca.uhn.fhir.cr.r4.IPlanDefinitionProcessorFactory;
-import ca.uhn.fhir.cr.r4.IQuestionnaireProcessorFactory;
-import ca.uhn.fhir.cr.r4.IQuestionnaireResponseProcessorFactory;
 import ca.uhn.fhir.cr.r4.activitydefinition.ActivityDefinitionOperationsProvider;
 import ca.uhn.fhir.cr.r4.plandefinition.PlanDefinitionOperationsProvider;
 import ca.uhn.fhir.cr.r4.questionnaire.QuestionnaireOperationsProvider;
 import ca.uhn.fhir.cr.r4.questionnaireresponse.QuestionnaireResponseOperationsProvider;
-import ca.uhn.fhir.rest.api.server.RequestDetails;
-import ca.uhn.fhir.rest.server.RestfulServer;
-import ca.uhn.fhir.rest.server.servlet.ServletRequestDetails;
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.evaluator.activitydefinition.r4.ActivityDefinitionProcessor;
@@ -22,23 +15,17 @@ import org.opencds.cqf.cql.evaluator.fhir.util.ValidationProfile;
 import org.opencds.cqf.cql.evaluator.library.EvaluationSettings;
 import org.opencds.cqf.cql.evaluator.measure.CareGapsProperties;
 import org.opencds.cqf.cql.evaluator.measure.MeasureEvaluationOptions;
-import org.opencds.cqf.cql.evaluator.measure.r4.R4CareGapsService;
 import org.opencds.cqf.cql.evaluator.plandefinition.r4.PlanDefinitionProcessor;
 import org.opencds.cqf.cql.evaluator.questionnaire.r4.QuestionnaireProcessor;
 import org.opencds.cqf.cql.evaluator.questionnaireresponse.r4.QuestionnaireResponseProcessor;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.concurrent.DelegatingSecurityContextExecutorService;
 
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -126,10 +113,6 @@ public class TestCrR4Config {
 			options.add(CqlEngine.Options.EnableValidation);
 		}
 		cqlEngineOptions.setOptions(options);
-		//cqlEngineOptions.setPageSize(1000);
-		//cqlEngineOptions.setMaxCodesPerQuery(10000);
-		//cqlEngineOptions.setShouldExpandValueSets(true);
-		//cqlEngineOptions.setQueryBatchThreshold(100000);
 
 		var cqlOptions = evaluationSettings.getCqlOptions();
 		cqlOptions.setCqlEngineOptions(cqlEngineOptions);
@@ -155,11 +138,11 @@ public class TestCrR4Config {
 			theCqlProperties.getCqlCompilerSignatureLevel(),
 			theCqlProperties.getCqlCompilerCompatibilityLevel()
 		);
-		cqlTranslatorOptions.setCompatibilityLevel(theCqlProperties.getCqlCompilerCompatibilityLevel());
+		cqlTranslatorOptions.setCompatibilityLevel("1.5");
 		cqlTranslatorOptions.setAnalyzeDataRequirements(theCqlProperties.isCqlCompilerAnalyzeDataRequirements());
 		cqlTranslatorOptions.setCollapseDataRequirements(theCqlProperties.isCqlCompilerCollapseDataRequirements());
-		//cqlTranslatorOptions.setEnableCqlOnly(true);
-		//cqlTranslatorOptions.set
+		cqlTranslatorOptions.setEnableCqlOnly(true);
+
 		cqlOptions.setCqlTranslatorOptions(cqlTranslatorOptions);
 
 		return evaluationSettings;
