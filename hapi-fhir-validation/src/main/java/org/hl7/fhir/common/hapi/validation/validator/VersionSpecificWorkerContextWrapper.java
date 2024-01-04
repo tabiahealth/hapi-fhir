@@ -507,12 +507,12 @@ public class VersionSpecificWorkerContextWrapper extends I18nBase implements IWo
 	}
 
 	@Override
-	public ILoggingService getLogger() {
+	public org.hl7.fhir.r5.context.ILoggingService getLogger() {
 		return null;
 	}
 
 	@Override
-	public void setLogger(ILoggingService logger) {
+	public void setLogger(org.hl7.fhir.r5.context.ILoggingService logger) {
 		throw new UnsupportedOperationException(Msg.code(687));
 	}
 

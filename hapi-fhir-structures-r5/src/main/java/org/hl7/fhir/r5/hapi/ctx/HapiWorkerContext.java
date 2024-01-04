@@ -278,12 +278,12 @@ public final class HapiWorkerContext extends I18nBase implements IWorkerContext 
 	}
 
 	@Override
-	public ILoggingService getLogger() {
+	public org.hl7.fhir.r5.context.ILoggingService getLogger() {
 		throw new UnsupportedOperationException(Msg.code(213));
 	}
 
 	@Override
-	public void setLogger(ILoggingService theLogger) {
+	public void setLogger(org.hl7.fhir.r5.context.ILoggingService theLogger) {
 		throw new UnsupportedOperationException(Msg.code(214));
 	}
 
