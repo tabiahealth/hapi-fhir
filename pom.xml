@@ -26,24 +26,16 @@
 	</issueManagement>
 
 	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
 		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/tabiahealth/packages</url>
 		</repository>
-		<site>
-			<id>git.server</id>
-			<url>scm:git:git@github.com:hapifhir/hapi-fhir.git</url>
-		</site>
 	</distributionManagement>
 
 	<scm>
-		<connection>scm:git:git@github.com:hapifhir/hapi-fhir.git</connection>
-		<url>scm:git:git@github.com:hapifhir/hapi-fhir.git</url>
-		<developerConnection>scm:git:git@github.com:hapifhir/hapi-fhir.git</developerConnection>
+		<developerConnection>scm:git:https://github.com/tabiahealth/hapi-fhir.git</developerConnection>
+		<tag>HEAD</tag>
 	</scm>
 
 	<repositories>
