@@ -742,9 +742,11 @@ class ParserState<T> {
 
 		@Override
 		public void endingElement() throws DataFormatException {
+			/*
 			if (myExtension.getValue() != null && myExtension.getExtension().size() > 0) {
 				throw new DataFormatException(Msg.code(1811) + "Extension (URL='" + myExtension.getUrl() + "') must not have both a value and other contained extensions");
 			}
+			*/
 			pop();
 		}
 
