@@ -138,8 +138,13 @@ public class ApacheRestfulClientFactory extends RestfulClientFactory {
 
 	@Override
 	public void setProxy(String theHost, Integer thePort) {
+		setProxy(theHost, thePort, "http");
+	}
+
+	@Override
+	public void setProxy(String theHost, Integer thePort, String schema) {
 		if (theHost != null) {
-			myProxy = new HttpHost(theHost, thePort, "http");
+			myProxy = new HttpHost(theHost, thePort, schema);
 		} else {
 			myProxy = null;
 		}

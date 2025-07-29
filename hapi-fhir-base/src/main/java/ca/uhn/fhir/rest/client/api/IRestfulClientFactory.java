@@ -185,13 +185,25 @@ public interface IRestfulClientFactory {
 
 	/**
 	 * Sets the HTTP proxy to use for outgoing connections
-	 * 
+	 *
 	 * @param theHost
 	 *            The host (or null to disable proxying, as is the default)
 	 * @param thePort
 	 *            The port (or null to disable proxying, as is the default)
 	 */
 	void setProxy(String theHost, Integer thePort);
+
+	/**
+	 * Sets the HTTP proxy to use for outgoing connections
+	 *
+	 * @param theHost
+	 *            The host (or null to disable proxying, as is the default)
+	 * @param thePort
+	 *            The port (or null to disable proxying, as is the default)
+	 */
+	default void setProxy(String theHost, Integer thePort, String schema){
+		setProxy(theHost, thePort);
+	}
 
 	/**
 	 * Sets the credentials to use to authenticate with the HTTP proxy,
